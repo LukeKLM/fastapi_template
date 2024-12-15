@@ -10,12 +10,26 @@ class Settings(BaseSettings):
     BACKEND_APP_NAME: str = "My API"
     DEBUG: bool = False
 
+    # CORS
+    CORS_ORIGINS: list[str] = (
+        "http://localhost",
+        "http://localhost:3000",
+    )
+
     # Database
     POSTGRES_SERVER: str = "localhost"
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str = ""
     POSTGRES_PASSWORD: str = ""
     POSTGRES_DB: str = ""
+
+    SQLALCHEMY_LOG_ENABLED: bool = False
+
+    # auth settings
+    SECRET_KEY = ""
+    ALGORITHM = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES = 600  # min
+    TOKEN_TYPE = "bearer"  # noqa S105
 
     class Config:
         env_file = ".env"

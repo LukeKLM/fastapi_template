@@ -3,8 +3,8 @@ import json
 import httpx
 from google.auth import jwt
 
-from app.users.auth_schemas import GoogleIdTokenDetail, GoogleToken
-from app.helpers.http_clients.base_http_client import BaseHttpClient
+from app.libs.http_clients.base_http_client import BaseHttpClient
+from app.users.schemas.auth_schemas import GoogleIdTokenDetail, GoogleToken
 from core.config import settings
 
 

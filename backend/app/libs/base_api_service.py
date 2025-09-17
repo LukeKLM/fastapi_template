@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
-from app.users.users_models import User
-from app.exceptions.api_exceptions import NotFoundException
+from app.libs.exceptions.api_exceptions import NotFoundException
+from app.users.models import User
 from core.db import SessionLocal
 
 

@@ -10,11 +10,10 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
 from passlib.context import CryptContext
 
-from app.exceptions.api_exceptions import UnauthorizedException
-from app.repositories.users import UserRepository
-from app.schemas.tokens import Token
-from app.schemas.tokens import TokenData
-from app.schemas.users import UserDetail
+from app.users.exceptions.auth_exceptions import UnauthorizedException
+from app.users.repositories.users_repositories import UserRepository
+from app.users.schemas.tokens_schemas import TokenData, Token
+from app.users.schemas.users_schemas import UserDetail
 from core.config import settings
 from core.db import SessionLocal
 from core.db import get_session

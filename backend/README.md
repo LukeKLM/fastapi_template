@@ -1,6 +1,7 @@
 # Household backend
 
 ## Running the backend
+`pip install "fastapi[standard]"`
 - `fastapi dev main.py --reload` [//] run the backend for development (auto-reload)
 
 ## Working with migrations

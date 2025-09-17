@@ -1,18 +1,22 @@
 from collections.abc import AsyncGenerator
-from datetime import datetime
 
-from sqlalchemy import Column
-from sqlalchemy import DateTime
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import Mapped
 
 from core.config import settings
+from core.db_utils import default_now
 
-engine = create_async_engine(str(settings.SQLALCHEMY_DATABASE_URI))
-print(settings.SQLALCHEMY_DATABASE_URI)
-SessionLocal = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine: AsyncEngine = create_async_engine(
+    str(settings.SQLALCHEMY_DATABASE_URI),
+    echo=settings.SQLALCHEMY_LOG_ENABLED,
+    pool_size=20,
+    max_overflow=0,
+    pool_pre_ping=True
+)
+SessionLocal: async_sessionmaker = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
@@ -20,11 +24,10 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
         yield session
 
 
-Base = declarative_base()
-
-
-class BaseModel(Base):
+class BaseModel(DeclarativeBase):
     __abstract__ = True
 
-    created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+    created_at: Mapped[default_now]
+    updated_at: Mapped[
+        default_now
+    ]  # onupdate is solved in db (trigger - trigger_set_updated_at)

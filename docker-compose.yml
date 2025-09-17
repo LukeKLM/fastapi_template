@@ -1,14 +1,15 @@
 services:
   db:
-    image: postgres:15
-    container_name: invoicer-db
+    image: postgres:17
+    container_name: household-db
     hostname: localhost
     ports:
       - "5432:5432"
     volumes:
-      - "./postgresql/:/var/run/postgresql/"
+      - "./pg_data/:/var/lib/postgresql/data"
     environment:
-      POSTGRES_DB: invoicer
-      POSTGRES_USER: invoicer
-      POSTGRES_PASSWORD: invoicer
+      POSTGRES_DB: household
+      POSTGRES_USER: household
+      POSTGRES_PASSWORD: household
       POSTGRES_HOST: 'localhost'
+    command: [ "postgres", "-c", "log_statement=all" ]

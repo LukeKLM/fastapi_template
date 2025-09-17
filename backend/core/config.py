@@ -1,20 +1,20 @@
+from dotenv import load_dotenv
 from pydantic import PostgresDsn
-from pydantic.v1 import BaseSettings
-from pydantic_core import MultiHostUrl
+from pydantic_settings import BaseSettings
+
+
+load_dotenv()
 
 
 class Settings(BaseSettings):
     # Auth
     AUTH_SECRET: str = ""
 
-    BACKEND_APP_NAME: str = "My API"
+    BACKEND_APP_NAME: str = "Household API"
     DEBUG: bool = False
 
     # CORS
-    CORS_ORIGINS: list[str] = (
-        "http://localhost",
-        "http://localhost:3000",
-    )
+    CORS_ORIGINS: list[str] = []
 
     # Database
     POSTGRES_SERVER: str = "localhost"
@@ -26,17 +26,25 @@ class Settings(BaseSettings):
     SQLALCHEMY_LOG_ENABLED: bool = False
 
     # auth settings
-    SECRET_KEY = ""
-    ALGORITHM = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES = 600  # min
-    TOKEN_TYPE = "bearer"  # noqa S105
+    SECRET_KEY: str = ""
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 600  # min
+    TOKEN_TYPE: str = "bearer"  # noqa S105
+
+    # Google
+    GOOGLE_CLIENT_ID: str = ""
+    GOOGLE_CLIENT_SECRET: str = ""
+    GOOGLE_REDIRECT_URI: str = ""
+
+    # Front-end
+    FRONTEND_URL: str = ""
 
     class Config:
         env_file = ".env"
 
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:  # noqa N802 should be lowercase
-        return MultiHostUrl.build(
+        return PostgresDsn.build(
             scheme="postgresql+asyncpg",
             username=self.POSTGRES_USER,
             password=self.POSTGRES_PASSWORD,

@@ -11,23 +11,13 @@ from jwt import InvalidTokenError
 from passlib.context import CryptContext
 
 from app.exceptions.api_exceptions import UnauthorizedException
-from app.repositories.auth import AuthRepository
+from app.repositories.users import UserRepository
 from app.schemas.tokens import Token
 from app.schemas.tokens import TokenData
 from app.schemas.users import UserDetail
 from core.config import settings
 from core.db import SessionLocal
 from core.db import get_session
-
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "is_active": False,
-    },
-}
-
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -72,7 +62,7 @@ async def get_current_user(
     except InvalidTokenError:
         raise UnauthorizedException from None
 
-    user = await AuthRepository(session).get_by_email(email=token_data.email)
+    user = await UserRepository(session).get_by_email(email=token_data.email)
 
     if user is None:
         raise UnauthorizedException
@@ -87,7 +77,7 @@ async def get_current_active_user(
     return current_user
 
 
-def generate_access_token(user):
+def generate_access_token(user) -> Token:
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.email},
